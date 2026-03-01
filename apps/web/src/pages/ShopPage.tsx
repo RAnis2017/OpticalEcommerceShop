@@ -30,21 +30,23 @@ export function ShopPage() {
           description="Browse optical frames and sun styles, then choose your lens package during the order flow."
         />
 
-        <div className="shop-banner">
-          <strong>{data?.products.length ?? 0} styles available</strong>
-          <span>Eligible frames can also be added to your home try-on shortlist.</span>
-        </div>
+        <div className="shop-toolbar">
+          <div className="shop-banner">
+            <strong>{data?.products.length ?? 0} styles available</strong>
+            <span>Eligible frames can also be added to your home try-on shortlist.</span>
+          </div>
 
-        <div className="filter-row">
-          {categories.map((item) => (
-            <button
-              key={item.value}
-              className={category === item.value ? "chip is-active" : "chip"}
-              onClick={() => setCategory(item.value)}
-            >
-              {item.label}
-            </button>
-          ))}
+          <div className="filter-row">
+            {categories.map((item) => (
+              <button
+                key={item.value}
+                className={category === item.value ? "chip is-active" : "chip"}
+                onClick={() => setCategory(item.value)}
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
         </div>
 
         {isLoading || !data ? (
@@ -63,19 +65,19 @@ export function ShopPage() {
                         productId: product.id,
                         productSlug: product.slug,
                         productName: product.name,
-                      image: product.images[0],
-                      quantity: 1,
-                      basePrice: product.price,
-                      requiresPrescription: product.prescriptionSupported,
-                    })
-                  }
-                >
-                  Add to bag
-                </button>
-              }
-            />
-          ))}
-        </div>
+                        image: product.images[0],
+                        quantity: 1,
+                        basePrice: product.price,
+                        requiresPrescription: product.prescriptionSupported,
+                      })
+                    }
+                  >
+                    Add to bag
+                  </button>
+                }
+              />
+            ))}
+          </div>
         )}
       </section>
     </div>

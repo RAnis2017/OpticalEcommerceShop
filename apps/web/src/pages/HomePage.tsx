@@ -12,6 +12,8 @@ export function HomePage() {
     queryFn: getStorefront,
   });
   const { addItem } = useCart();
+  const leadProduct = data?.featuredProducts[0];
+  const supportProduct = data?.featuredProducts[1];
 
   if (isLoading || !data) {
     return <section className="page loading-panel">Loading storefront...</section>;
@@ -43,23 +45,49 @@ export function HomePage() {
           </div>
         </div>
 
-        <div className="hero-panel">
-          <div className="hero-card">
-            <p>Home try-on service</p>
-            <strong>
-              {data.homeTryOn.minimumFrames}+ frames for Rs {data.homeTryOn.serviceFee}
-            </strong>
-            <span>Select the styles you want to see in person, try them at home, then place the final prescription order.</span>
-          </div>
-          <div className="stat-grid">
-            {data.storefront.stats.map((stat) => (
-              <div key={stat.label} className="stat-card">
-                <strong>{stat.value}</strong>
-                <span>{stat.label}</span>
+        <div className="hero-stage">
+          {leadProduct ? (
+            <article className="hero-stage-card hero-stage-primary">
+              <img src={leadProduct.images[0]} alt={leadProduct.name} />
+              <div className="hero-stage-copy">
+                <p className="eyebrow">Featured fit</p>
+                <h3>{leadProduct.name}</h3>
+                <span>{leadProduct.subtitle}</span>
+                <strong>Rs {leadProduct.price.toLocaleString()}</strong>
               </div>
-            ))}
+            </article>
+          ) : null}
+
+          <div className="hero-stage-column">
+            <div className="hero-card hero-home-card">
+              <p>Home try-on service</p>
+              <strong>
+                {data.homeTryOn.minimumFrames}+ frames for Rs {data.homeTryOn.serviceFee}
+              </strong>
+              <span>Select the styles you want to see in person, try them at home, then place the final prescription order.</span>
+            </div>
+
+            {supportProduct ? (
+              <article className="hero-stage-card hero-stage-secondary">
+                <img src={supportProduct.images[1] ?? supportProduct.images[0]} alt={supportProduct.name} />
+                <div className="hero-stage-copy">
+                  <p className="eyebrow">Lens-ready</p>
+                  <h3>{supportProduct.name}</h3>
+                  <span>{supportProduct.shape}</span>
+                </div>
+              </article>
+            ) : null}
           </div>
         </div>
+      </section>
+
+      <section className="hero-metric-band">
+        {data.storefront.stats.map((stat) => (
+          <div key={stat.label} className="stat-card hero-stat-card">
+            <strong>{stat.value}</strong>
+            <span>{stat.label}</span>
+          </div>
+        ))}
       </section>
 
       <section className="page-section">
