@@ -21,16 +21,16 @@ export function HomePage() {
     <div className="page">
       <section className="hero">
         <div className="hero-copy">
-          <p className="eyebrow">Optical commerce for one brand</p>
+          <p className="eyebrow">Studio Vision</p>
           <h1>{data.storefront.heroTitle}</h1>
           <p>{data.storefront.heroSubtitle}</p>
 
           <div className="hero-actions">
             <Link className="button button-primary" to="/shop">
-              Shop frames
+              Shop the collection
             </Link>
             <Link className="button button-secondary" to="/try-at-home">
-              Book try-at-home
+              Build your home try-on
             </Link>
           </div>
 
@@ -45,11 +45,11 @@ export function HomePage() {
 
         <div className="hero-panel">
           <div className="hero-card">
-            <p>Home try-on</p>
+            <p>Home try-on service</p>
             <strong>
               {data.homeTryOn.minimumFrames}+ frames for Rs {data.homeTryOn.serviceFee}
             </strong>
-            <span>Pick your shortlist at home, then confirm prescription fitting.</span>
+            <span>Select the styles you want to see in person, try them at home, then place the final prescription order.</span>
           </div>
           <div className="stat-grid">
             {data.storefront.stats.map((stat) => (
@@ -64,9 +64,9 @@ export function HomePage() {
 
       <section className="page-section">
         <SectionHeader
-          eyebrow="Featured edit"
-          title="Frames tuned for work, travel, and long wear."
-          description="This first implementation ships with a full-stack foundation and a curated demo catalog you can extend from the admin side later."
+          eyebrow="Featured frames"
+          title="Everyday frames with prescription-ready lens options."
+          description="Designed for daily wear, fitted for your prescription, and finished with the lens package that suits how you work, read, and move."
         />
 
         <div className="product-grid">
@@ -89,7 +89,7 @@ export function HomePage() {
                     })
                   }
                 >
-                  Add to cart
+                  Add to bag
                 </button>
               }
             />
@@ -101,30 +101,30 @@ export function HomePage() {
         <div className="editorial-card">
           <SectionHeader
             eyebrow="Collections"
-            title="Merchandise the catalog around optical use cases."
-            description="The backend is already structured for frames, lenses, orders, try-on requests, and admin operations."
+            title="Styles grouped around how people actually wear them."
+            description="From workday rectangles to lighter titanium frames and prescription-ready sun styles, the collection is organised around fit and purpose."
           />
           <div className="collection-list">
             {data.storefront.featuredCollections.map((collection) => (
               <article key={collection.id} className="collection-card">
                 <h3>{collection.title}</h3>
                 <p>{collection.description}</p>
-                <Link to="/shop">Browse collection</Link>
+                <Link to="/shop">Explore frames</Link>
               </article>
             ))}
           </div>
         </div>
 
         <div className="ops-card">
-          <p className="eyebrow">Operations spine</p>
-          <h3>Admin-ready flows from day one.</h3>
+          <p className="eyebrow">Why clients choose us</p>
+          <h3>Styled at home, fitted to prescription, delivered with care.</h3>
           <ul className="feature-list">
-            <li>Cookie-protected admin login backed by the Express API</li>
-            <li>Order and try-at-home submission endpoints with validation</li>
-            <li>React Query data layer for storefront and operations screens</li>
+            <li>Single vision, blue-light, and progressive lens packages</li>
+            <li>Cash on delivery for both purchase and home try-on service</li>
+            <li>At-home selection for eligible frames before final fitting</li>
           </ul>
-          <Link className="button button-primary" to="/admin/login">
-            Open admin access
+          <Link className="button button-primary" to="/try-at-home">
+            Start home try-on
           </Link>
         </div>
       </section>

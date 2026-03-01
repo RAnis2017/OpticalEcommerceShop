@@ -1,15 +1,18 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import type { LensPackage } from "@optical/shared";
 import { useParams } from "react-router-dom";
 
 import { getLensPackages, getProduct } from "../lib/api";
 import { useCart } from "../state/cart-context";
+import { useTryOn } from "../state/try-on-context";
 
 export function ProductPage() {
   const { slug = "" } = useParams();
   const { addItem } = useCart();
+  const { isSelected, toggleSelection } = useTryOn();
   const [selectedLens, setSelectedLens] = useState<string>("frame-only");
+  const [activeImage, setActiveImage] = useState<string>("");
   const [message, setMessage] = useState("");
 
   const productQuery = useQuery({
@@ -25,6 +28,12 @@ export function ProductPage() {
   const lensPackages = lensPackagesQuery.data?.lensPackages ?? [];
   const product = productQuery.data?.product;
 
+  useEffect(() => {
+    if (product?.images[0]) {
+      setActiveImage(product.images[0]);
+    }
+  }, [product]);
+
   if (productQuery.isLoading || !product) {
     return <section className="page loading-panel">Loading product...</section>;
   }
@@ -38,15 +47,40 @@ export function ProductPage() {
     <div className="page">
       <section className="product-detail">
         <div className="product-detail-media">
-          <img src={product.images[0]} alt={product.name} />
+          <div className="product-gallery-frame">
+            <img src={activeImage || product.images[0]} alt={product.name} />
+          </div>
+          <div className="product-gallery-strip">
+            {product.images.map((image, index) => (
+              <button
+                key={`${product.id}-${index}`}
+                type="button"
+                className={activeImage === image ? "gallery-thumb is-active" : "gallery-thumb"}
+                onClick={() => setActiveImage(image)}
+              >
+                <img src={image} alt={`${product.name} view ${index + 1}`} />
+              </button>
+            ))}
+          </div>
         </div>
 
         <div className="product-detail-copy">
           <p className="eyebrow">{product.category}</p>
           <h1>{product.name}</h1>
           <p className="product-subtitle">{product.subtitle}</p>
-          <strong className="product-price">Rs {product.price.toLocaleString()}</strong>
+          <div className="price-row">
+            <strong className="product-price">Rs {product.price.toLocaleString()}</strong>
+            {product.compareAtPrice ? <span className="compare-price">Rs {product.compareAtPrice.toLocaleString()}</span> : null}
+          </div>
           <p>{product.description}</p>
+
+          <div className="product-color-row">
+            {product.colors.map((color) => (
+              <span key={color} className="color-chip">
+                {color}
+              </span>
+            ))}
+          </div>
 
           <div className="spec-grid">
             <div>
@@ -64,8 +98,8 @@ export function ProductPage() {
               </strong>
             </div>
             <div>
-              <span>Try at home</span>
-              <strong>{product.tryOnEligible ? "Available" : "Not available"}</strong>
+              <span>Home try-on</span>
+              <strong>{product.tryOnEligible ? "Available for shortlist" : "Exclusive to direct order"}</strong>
             </div>
           </div>
 
@@ -101,11 +135,26 @@ export function ProductPage() {
                   lensPrice: selectedLensPackage?.price,
                   requiresPrescription: product.prescriptionSupported,
                 });
-                setMessage("Added to cart.");
+                setMessage("Added to your bag.");
               }}
             >
-              Add to cart
+              Add to bag
             </button>
+            {product.tryOnEligible ? (
+              <button
+                className={isSelected(product.id) ? "button button-secondary is-selected" : "button button-secondary"}
+                onClick={() => {
+                  toggleSelection(product.id);
+                  setMessage(
+                    isSelected(product.id)
+                      ? "Removed from your home try-on shortlist."
+                      : "Added to your home try-on shortlist.",
+                  );
+                }}
+              >
+                {isSelected(product.id) ? "Shortlisted" : "Add to home try-on"}
+              </button>
+            ) : null}
           </div>
 
           {message ? <p className="inline-success">{message}</p> : null}

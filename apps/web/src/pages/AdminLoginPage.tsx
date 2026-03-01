@@ -6,8 +6,8 @@ import { loginAdmin } from "../lib/api";
 
 export function AdminLoginPage() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("admin@opticaldemo.local");
-  const [password, setPassword] = useState("change-this-before-production");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const mutation = useMutation({
     mutationFn: ({ email, password }: { email: string; password: string }) => loginAdmin(email, password),
@@ -17,22 +17,19 @@ export function AdminLoginPage() {
   });
 
   return (
-    <div className="page">
-      <section className="page-section auth-section">
-        <div className="auth-card">
-          <p className="eyebrow">Admin access</p>
-          <h1>Sign in to Studio Vision operations.</h1>
-          <p>
-            This first cut uses server-issued cookies for admin routes. Replace the seed credentials in your local `.env`
-            before any real deployment.
-          </p>
+    <div className="admin-auth-page">
+      <section className="auth-section">
+        <div className="auth-card admin-auth-card">
+          <p className="eyebrow">Authorised staff</p>
+          <h1>Studio Vision operations</h1>
+          <p>Secure access for order handling, customer records, try-at-home requests, and COD operations.</p>
           <label>
             Email
-            <input value={email} onChange={(event) => setEmail(event.target.value)} />
+            <input value={email} onChange={(event) => setEmail(event.target.value)} placeholder="name@studiovision.com" />
           </label>
           <label>
             Password
-            <input type="password" value={password} onChange={(event) => setPassword(event.target.value)} />
+            <input type="password" value={password} onChange={(event) => setPassword(event.target.value)} placeholder="Enter password" />
           </label>
           <button className="button button-primary" disabled={mutation.isPending} onClick={() => mutation.mutate({ email, password })}>
             {mutation.isPending ? "Signing in..." : "Sign in"}

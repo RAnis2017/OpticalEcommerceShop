@@ -35,6 +35,12 @@ export function CheckoutPage() {
     },
   });
 
+  const canSubmit =
+    form.customerName.trim() &&
+    form.phone.trim() &&
+    form.city.trim() &&
+    form.addressLine1.trim();
+
   if (items.length === 0 && !mutation.isSuccess) {
     return <Navigate to="/cart" replace />;
   }
@@ -44,7 +50,8 @@ export function CheckoutPage() {
       <section className="page-section">
         <div className="checkout-layout">
           <div className="form-panel">
-            <h2>Cash on delivery checkout</h2>
+            <p className="eyebrow">Checkout</p>
+            <h2>Complete your order</h2>
             <div className="form-grid">
               <label>
                 Name
@@ -99,7 +106,7 @@ export function CheckoutPage() {
 
             <button
               className="button button-primary"
-              disabled={mutation.isPending}
+              disabled={!canSubmit || mutation.isPending}
               onClick={() =>
                 mutation.mutate({
                   ...form,
@@ -112,22 +119,36 @@ export function CheckoutPage() {
                 })
               }
             >
-              {mutation.isPending ? "Placing order..." : "Place COD order"}
+              {mutation.isPending ? "Placing order..." : "Place order"}
             </button>
 
             {mutation.isError ? <p className="inline-error">{mutation.error.message}</p> : null}
             {mutation.isSuccess ? (
               <div className="success-panel">
-                <strong>Order placed: {mutation.data.order.id}</strong>
-                <p>COD payable on delivery: Rs {mutation.data.order.codAmount.toLocaleString()}</p>
+                <strong>Your order is confirmed</strong>
+                <p>Reference {mutation.data.order.id}. COD payable on delivery: Rs {mutation.data.order.codAmount.toLocaleString()}.</p>
               </div>
             ) : null}
           </div>
 
           <aside className="summary-card">
-            <p>COD total</p>
+            <p>Payment summary</p>
             <strong>Rs {cartTotal.toLocaleString()}</strong>
             <span>Payment mode: cash on delivery</span>
+            <div className="table-stack">
+              {items.map((item) => (
+                <article key={`${item.productId}-${item.lensPackageId ?? "frame"}`} className="table-card">
+                  <div>
+                    <strong>{item.productName}</strong>
+                    <span>{item.lensPackageName ?? "Frame only"}</span>
+                  </div>
+                  <div>
+                    <strong>Rs {((item.basePrice + (item.lensPrice ?? 0)) * item.quantity).toLocaleString()}</strong>
+                    <span>Qty {item.quantity}</span>
+                  </div>
+                </article>
+              ))}
+            </div>
           </aside>
         </div>
       </section>

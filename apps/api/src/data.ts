@@ -13,13 +13,13 @@ import type {
 
 export const storefrontContent: StorefrontContent = {
   brandName: "Studio Vision",
-  heroTitle: "Prescription eyewear shaped for daily life, not display shelves.",
+  heroTitle: "Eyewear that looks right at home before it ever reaches the counter.",
   heroSubtitle:
-    "Shop frames, add lenses, or book a try-at-home set with ten frames delivered to your door before you decide.",
+    "Choose your frames, add your lenses, or send a curated try-at-home set to your door before you commit.",
   serviceHighlights: [
-    "Cash on delivery across the buying journey",
-    "Frame-only, frame-plus-lens, and home try-on flows",
-    "Admin operations for orders, invoices, refunds, and try-on tracking",
+    "Cash on delivery across the full order journey",
+    "Frame-only, prescription, and home try-on services",
+    "In-home selection before final lens fitting",
   ],
   featuredCollections: [
     {
@@ -42,8 +42,8 @@ export const storefrontContent: StorefrontContent = {
     },
   ],
   stats: [
-    { label: "Frames ready for try-at-home", value: "10+" },
-    { label: "COD-supported journeys", value: "3" },
+    { label: "Frames ready for home try-on", value: "12" },
+    { label: "Prescription lens packages", value: "3" },
     { label: "Lens fitting turnaround", value: "48 hrs" },
   ],
 };
@@ -98,7 +98,17 @@ const defaultImages = {
     "https://images.unsplash.com/photo-1574258495973-f010dfbb5371?auto=format&fit=crop&w=1200&q=80",
   aviator:
     "https://images.unsplash.com/photo-1511920170033-f8396924c348?auto=format&fit=crop&w=1200&q=80",
+  studio:
+    "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=1200&q=80",
+  portrait:
+    "https://images.unsplash.com/photo-1524250502761-1ac6f2e30d43?auto=format&fit=crop&w=1200&q=80",
+  shelf:
+    "https://images.unsplash.com/photo-1574258495973-f010dfbb5371?auto=format&fit=crop&w=1200&q=80",
 };
+
+function gallery(...images: string[]): string[] {
+  return images;
+}
 
 function buildProduct(
   overrides: Partial<Product> &
@@ -135,7 +145,7 @@ export const products: Product[] = [
     featured: true,
     colors: ["Matte Olive", "Jet Black"],
     tags: ["low bridge", "screen-ready", "unisex"],
-    images: [defaultImages.olive],
+    images: gallery(defaultImages.olive, defaultImages.studio, defaultImages.shelf),
   }),
   buildProduct({
     id: "frame-02",
@@ -147,7 +157,7 @@ export const products: Product[] = [
     shape: "Round",
     size: "S",
     colors: ["Chai Tortoise", "Soft Amber"],
-    images: [defaultImages.chai],
+    images: gallery(defaultImages.chai, defaultImages.portrait, defaultImages.studio),
   }),
   buildProduct({
     id: "frame-03",
@@ -158,7 +168,7 @@ export const products: Product[] = [
     price: 3899,
     shape: "Square",
     size: "L",
-    images: [defaultImages.midnight],
+    images: gallery(defaultImages.midnight, defaultImages.studio, defaultImages.olive),
   }),
   buildProduct({
     id: "frame-04",
@@ -171,7 +181,7 @@ export const products: Product[] = [
     featured: true,
     colors: ["Crystal", "Smoke"],
     lensCompatibility: ["single vision", "blue light"],
-    images: [defaultImages.crystal],
+    images: gallery(defaultImages.crystal, defaultImages.portrait, defaultImages.shelf),
   }),
   buildProduct({
     id: "frame-05",
@@ -183,7 +193,7 @@ export const products: Product[] = [
     shape: "Rectangle",
     material: "Titanium blend",
     colors: ["Gunmetal", "Satin Silver"],
-    images: [defaultImages.metal],
+    images: gallery(defaultImages.metal, defaultImages.studio, defaultImages.aviator),
   }),
   buildProduct({
     id: "frame-06",
@@ -196,7 +206,7 @@ export const products: Product[] = [
     featured: true,
     colors: ["Rosewood", "Ink Plum"],
     lensCompatibility: ["single vision", "blue light"],
-    images: [defaultImages.rosewood],
+    images: gallery(defaultImages.rosewood, defaultImages.portrait, defaultImages.chai),
   }),
   buildProduct({
     id: "frame-07",
@@ -209,7 +219,7 @@ export const products: Product[] = [
     size: "S",
     material: "Stainless steel",
     lensCompatibility: ["single vision", "blue light"],
-    images: [defaultImages.wire],
+    images: gallery(defaultImages.wire, defaultImages.studio, defaultImages.olive),
   }),
   buildProduct({
     id: "frame-08",
@@ -220,7 +230,7 @@ export const products: Product[] = [
     price: 3399,
     shape: "Soft square",
     colors: ["Sand", "Olive Mist"],
-    images: [defaultImages.chai],
+    images: gallery(defaultImages.chai, defaultImages.shelf, defaultImages.crystal),
   }),
   buildProduct({
     id: "frame-09",
@@ -232,7 +242,7 @@ export const products: Product[] = [
     shape: "Oval",
     size: "S",
     lensCompatibility: ["single vision", "blue light"],
-    images: [defaultImages.olive],
+    images: gallery(defaultImages.olive, defaultImages.portrait, defaultImages.metal),
   }),
   buildProduct({
     id: "frame-10",
@@ -243,7 +253,7 @@ export const products: Product[] = [
     price: 4099,
     shape: "Browline",
     colors: ["Walnut", "Ink Gold"],
-    images: [defaultImages.midnight],
+    images: gallery(defaultImages.midnight, defaultImages.studio, defaultImages.shelf),
   }),
   buildProduct({
     id: "frame-11",
@@ -255,13 +265,13 @@ export const products: Product[] = [
     category: "sunglasses",
     shape: "Aviator",
     size: "L",
-    tryOnEligible: false,
+    tryOnEligible: true,
     featured: true,
     saleStock: 9,
-    tryOnStock: 0,
+    tryOnStock: 3,
     lensCompatibility: ["single vision", "tinted sun"],
     colors: ["Smoke", "Champagne"],
-    images: [defaultImages.aviator],
+    images: gallery(defaultImages.aviator, defaultImages.studio, defaultImages.portrait),
   }),
   buildProduct({
     id: "frame-12",
@@ -274,12 +284,12 @@ export const products: Product[] = [
     shape: "Wrap",
     size: "L",
     material: "TR90",
-    tryOnEligible: false,
+    tryOnEligible: true,
     saleStock: 8,
-    tryOnStock: 0,
+    tryOnStock: 2,
     lensCompatibility: ["single vision", "tinted sun"],
     colors: ["Amber", "Graphite"],
-    images: [defaultImages.wire],
+    images: gallery(defaultImages.wire, defaultImages.aviator, defaultImages.shelf),
   }),
 ];
 

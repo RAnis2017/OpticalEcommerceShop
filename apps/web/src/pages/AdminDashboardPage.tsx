@@ -1,7 +1,11 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { Link, Navigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
 import { getAdminOrders, getAdminOverview, getAdminSession, getAdminTryOnRequests, logoutAdmin } from "../lib/api";
+
+function formatDate(value: string): string {
+  return new Date(value).toLocaleString();
+}
 
 export function AdminDashboardPage() {
   const sessionQuery = useQuery({
@@ -43,18 +47,15 @@ export function AdminDashboardPage() {
   }
 
   return (
-    <div className="page">
-      <section className="page-section">
-        <div className="dashboard-header">
+    <div className="admin-dashboard-page">
+      <section className="admin-dashboard">
+        <div className="dashboard-header admin-dashboard-header">
           <div>
-            <p className="eyebrow">Admin panel</p>
+            <p className="eyebrow">Studio Vision Admin</p>
             <h1>Operations dashboard</h1>
             <p>{sessionQuery.data.session.email}</p>
           </div>
           <div className="dashboard-actions">
-            <Link className="button button-secondary" to="/shop">
-              View storefront
-            </Link>
             <button className="button button-primary" onClick={() => logoutMutation.mutate()}>
               Sign out
             </button>
@@ -62,39 +63,46 @@ export function AdminDashboardPage() {
         </div>
 
         {overviewQuery.data ? (
-          <div className="stat-grid">
-            <div className="stat-card">
-              <strong>{overviewQuery.data.overview.totalOrders}</strong>
-              <span>Total orders</span>
-            </div>
-            <div className="stat-card">
-              <strong>Rs {overviewQuery.data.overview.revenueBooked.toLocaleString()}</strong>
+          <div className="admin-kpi-grid">
+            <article className="admin-kpi-card accent-card">
               <span>Revenue booked</span>
-            </div>
-            <div className="stat-card">
-              <strong>Rs {overviewQuery.data.overview.codPending.toLocaleString()}</strong>
+              <strong>Rs {overviewQuery.data.overview.revenueBooked.toLocaleString()}</strong>
+            </article>
+            <article className="admin-kpi-card">
+              <span>Active orders</span>
+              <strong>{overviewQuery.data.overview.totalOrders}</strong>
+            </article>
+            <article className="admin-kpi-card">
               <span>COD pending</span>
-            </div>
-            <div className="stat-card">
+              <strong>Rs {overviewQuery.data.overview.codPending.toLocaleString()}</strong>
+            </article>
+            <article className="admin-kpi-card">
+              <span>Try-at-home queue</span>
               <strong>{overviewQuery.data.overview.tryOnPending}</strong>
-              <span>Open try-at-home requests</span>
-            </div>
+            </article>
           </div>
         ) : null}
 
-        <div className="dashboard-grid">
+        <div className="admin-content-grid">
           <section className="admin-panel">
-            <h2>Orders</h2>
+            <div className="panel-head">
+              <div>
+                <p className="eyebrow">Orders</p>
+                <h2>Current order pipeline</h2>
+              </div>
+            </div>
             <div className="table-stack">
               {ordersQuery.data?.orders.map((order) => (
-                <article key={order.id} className="table-card">
+                <article key={order.id} className="table-card order-card">
                   <div>
-                    <strong>{order.id}</strong>
-                    <span>{order.customerName}</span>
+                    <strong>{order.customerName}</strong>
+                    <span>{order.id}</span>
+                    <span>{order.city}</span>
                   </div>
                   <div>
                     <strong>Rs {order.codAmount.toLocaleString()}</strong>
-                    <span>{order.status}</span>
+                    <span>{formatDate(order.createdAt)}</span>
+                    <span className={`status-pill status-${order.status}`}>{order.status.replaceAll("_", " ")}</span>
                   </div>
                 </article>
               ))}
@@ -102,24 +110,39 @@ export function AdminDashboardPage() {
           </section>
 
           <section className="admin-panel">
-            <h2>Try-at-home requests</h2>
+            <div className="panel-head">
+              <div>
+                <p className="eyebrow">Home try-on</p>
+                <h2>Shortlist and dispatch queue</h2>
+              </div>
+            </div>
             <div className="table-stack">
               {tryOnQuery.data?.tryOnRequests.map((request) => (
-                <article key={request.id} className="table-card">
+                <article key={request.id} className="table-card order-card">
                   <div>
-                    <strong>{request.id}</strong>
-                    <span>
-                      {request.customerName} · {request.selectedFrames.length} frames
-                    </span>
+                    <strong>{request.customerName}</strong>
+                    <span>{request.id}</span>
+                    <span>{request.selectedFrames.length} frames selected</span>
                   </div>
                   <div>
                     <strong>Rs {request.serviceFee}</strong>
-                    <span>{request.status}</span>
+                    <span>{formatDate(request.createdAt)}</span>
+                    <span className={`status-pill status-${request.status}`}>{request.status.replaceAll("_", " ")}</span>
                   </div>
                 </article>
               ))}
             </div>
           </section>
+
+          <aside className="admin-panel admin-side-note">
+            <p className="eyebrow">Daily focus</p>
+            <h2>Operational priorities</h2>
+            <ul className="feature-list">
+              <li>Confirm home try-on dispatches before the selected slots.</li>
+              <li>Call COD customers for prescription confirmation where needed.</li>
+              <li>Track returned trial frames before converting final orders.</li>
+            </ul>
+          </aside>
         </div>
       </section>
     </div>

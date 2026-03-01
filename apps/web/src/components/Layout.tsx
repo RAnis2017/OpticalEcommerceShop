@@ -1,16 +1,17 @@
 import { NavLink, Outlet } from "react-router-dom";
 
 import { useCart } from "../state/cart-context";
+import { useTryOn } from "../state/try-on-context";
 
 const navItems = [
   { to: "/", label: "Home", end: true },
   { to: "/shop", label: "Shop" },
   { to: "/try-at-home", label: "Try at Home" },
-  { to: "/admin", label: "Admin" },
 ];
 
 export function Layout() {
   const { itemCount } = useCart();
+  const { selectedCount } = useTryOn();
 
   return (
     <div className="shell">
@@ -19,7 +20,7 @@ export function Layout() {
           <span className="brand-mark">SV</span>
           <div>
             <p className="brand-name">Studio Vision</p>
-            <p className="brand-tag">Single-brand optical commerce</p>
+            <p className="brand-tag">Eyewear, lenses, and home styling</p>
           </div>
         </NavLink>
 
@@ -32,6 +33,9 @@ export function Layout() {
               className={({ isActive }) => (isActive ? "nav-link is-active" : "nav-link")}
             >
               {item.label}
+              {item.to === "/try-at-home" && selectedCount > 0 ? (
+                <span className="nav-counter">{selectedCount}</span>
+              ) : null}
             </NavLink>
           ))}
           <NavLink className="cart-pill" to="/cart">
@@ -44,6 +48,17 @@ export function Layout() {
       <main>
         <Outlet />
       </main>
+
+      <footer className="site-footer">
+        <div>
+          <strong>Studio Vision</strong>
+          <p>Prescription-ready frames, COD checkout, and in-home try-on for selected styles.</p>
+        </div>
+        <div className="footer-meta">
+          <span>Crafted for a single optical house</span>
+          <span>Home try-on from Rs 500</span>
+        </div>
+      </footer>
     </div>
   );
 }

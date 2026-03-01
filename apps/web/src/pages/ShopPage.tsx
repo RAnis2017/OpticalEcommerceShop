@@ -25,10 +25,15 @@ export function ShopPage() {
     <div className="page">
       <section className="page-section">
         <SectionHeader
-          eyebrow="Catalog"
-          title="Single-brand merchandising for frames and lenses."
-          description="This storefront is tailored for one optical business, with categories that support frames, prescription upsell, and try-at-home conversion."
+          eyebrow="Shop"
+          title="Frames ready for everyday wear, prescription fitting, and select home try-on."
+          description="Browse optical frames and sun styles, then choose your lens package during the order flow."
         />
+
+        <div className="shop-banner">
+          <strong>{data?.products.length ?? 0} styles available</strong>
+          <span>Eligible frames can also be added to your home try-on shortlist.</span>
+        </div>
 
         <div className="filter-row">
           {categories.map((item) => (
@@ -58,19 +63,19 @@ export function ShopPage() {
                         productId: product.id,
                         productSlug: product.slug,
                         productName: product.name,
-                        image: product.images[0],
-                        quantity: 1,
-                        basePrice: product.price,
-                        requiresPrescription: product.prescriptionSupported,
-                      })
-                    }
-                  >
-                    Add
-                  </button>
-                }
-              />
-            ))}
-          </div>
+                      image: product.images[0],
+                      quantity: 1,
+                      basePrice: product.price,
+                      requiresPrescription: product.prescriptionSupported,
+                    })
+                  }
+                >
+                  Add to bag
+                </button>
+              }
+            />
+          ))}
+        </div>
         )}
       </section>
     </div>
