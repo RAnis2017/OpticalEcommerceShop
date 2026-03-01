@@ -6,6 +6,10 @@ Planning-first repository for an optical ecommerce platform focused on frames, p
 
 Phase 1 is complete: product and implementation planning.
 
+## Business Model
+
+This is a single-tenant ecommerce system for one optical business and one branded storefront. It is not a marketplace and does not need multi-store or multi-tenant architecture.
+
 ## Proposed Stack
 
 - Next.js with TypeScript

@@ -4,6 +4,19 @@
 
 Build a modern ecommerce website for an optical business that sells frames, sunglasses, lenses, and prescription eyewear. The platform should support standard ecommerce operations and include a home try-on model where a customer can select 10 or more glasses, pay Rs 500, try them at home, choose preferred frames, and then place a prescription order for final delivery.
 
+## 1A. Business Model Constraint
+
+This platform is for one optical business only.
+
+- Single branded storefront
+- Single admin organization
+- Single catalog ownership model
+- No vendor marketplace behavior
+- No multi-tenant architecture
+- No per-tenant data isolation layer
+
+Implementation should optimize for a straightforward single-business setup rather than introducing tenant abstractions.
+
 ## 2. Recommended Build Direction
 
 Use a full-stack TypeScript application with:
@@ -15,6 +28,8 @@ Use a full-stack TypeScript application with:
 - Object storage for frame images, invoices, and prescription files
 
 This gives good control over custom optical flows that are awkward in template-based ecommerce systems.
+
+Because the platform is single-tenant, the data model and admin architecture should stay simple and should not include `Tenant`, `Store`, `Organization`, or similar multi-tenant wrapper models unless a future requirement explicitly adds them.
 
 ## 3. User Roles
 
@@ -169,6 +184,7 @@ Phase 1 should treat Rs 500 as a service fee recorded as cash to collect on deli
 - Inventory should distinguish saleable stock from try-on stock
 - Prescription can belong to a user and attach to one or more orders
 - TryOnRequest should be convertible into a standard order
+- All operational data belongs to the same business context, so tenant foreign keys are not required
 
 ## 8. Security Requirements
 
