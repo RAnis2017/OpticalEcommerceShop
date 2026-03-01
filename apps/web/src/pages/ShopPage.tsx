@@ -1,0 +1,78 @@
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import type { ProductCategory } from "@optical/shared";
+
+import { ProductCard } from "../components/ProductCard";
+import { SectionHeader } from "../components/SectionHeader";
+import { getProducts } from "../lib/api";
+import { useCart } from "../state/cart-context";
+
+const categories: Array<{ label: string; value: ProductCategory | "all" }> = [
+  { label: "All", value: "all" },
+  { label: "Eyeglasses", value: "eyeglasses" },
+  { label: "Sunglasses", value: "sunglasses" },
+];
+
+export function ShopPage() {
+  const [category, setCategory] = useState<ProductCategory | "all">("all");
+  const { addItem } = useCart();
+  const { data, isLoading } = useQuery({
+    queryKey: ["products", category],
+    queryFn: () => getProducts(category),
+  });
+
+  return (
+    <div className="page">
+      <section className="page-section">
+        <SectionHeader
+          eyebrow="Catalog"
+          title="Single-brand merchandising for frames and lenses."
+          description="This storefront is tailored for one optical business, with categories that support frames, prescription upsell, and try-at-home conversion."
+        />
+
+        <div className="filter-row">
+          {categories.map((item) => (
+            <button
+              key={item.value}
+              className={category === item.value ? "chip is-active" : "chip"}
+              onClick={() => setCategory(item.value)}
+            >
+              {item.label}
+            </button>
+          ))}
+        </div>
+
+        {isLoading || !data ? (
+          <div className="loading-panel">Loading products...</div>
+        ) : (
+          <div className="product-grid">
+            {data.products.map((product) => (
+              <ProductCard
+                key={product.id}
+                product={product}
+                action={
+                  <button
+                    className="mini-button"
+                    onClick={() =>
+                      addItem({
+                        productId: product.id,
+                        productSlug: product.slug,
+                        productName: product.name,
+                        image: product.images[0],
+                        quantity: 1,
+                        basePrice: product.price,
+                        requiresPrescription: product.prescriptionSupported,
+                      })
+                    }
+                  >
+                    Add
+                  </button>
+                }
+              />
+            ))}
+          </div>
+        )}
+      </section>
+    </div>
+  );
+}
