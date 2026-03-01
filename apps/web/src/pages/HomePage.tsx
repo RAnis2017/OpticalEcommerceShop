@@ -11,7 +11,7 @@ export function HomePage() {
     queryKey: ["storefront"],
     queryFn: getStorefront,
   });
-  const { addItem } = useCart();
+  const { addItem, getProductQuantity } = useCart();
   const leadProduct = data?.featuredProducts[0];
   const supportProduct = data?.featuredProducts[1];
 
@@ -98,30 +98,37 @@ export function HomePage() {
         />
 
         <div className="product-grid">
-          {data.featuredProducts.map((product) => (
-            <ProductCard
-              key={product.id}
-              product={product}
-              action={
-                <button
-                  className="mini-button"
-                  onClick={() =>
-                    addItem({
-                      productId: product.id,
-                      productSlug: product.slug,
-                      productName: product.name,
-                      image: product.images[0],
-                      quantity: 1,
-                      basePrice: product.price,
-                      requiresPrescription: product.prescriptionSupported,
-                    })
-                  }
-                >
-                  Add to bag
-                </button>
-              }
-            />
-          ))}
+          {data.featuredProducts.map((product) => {
+            const soldOut = getProductQuantity(product.id) >= product.saleStock;
+
+            return (
+              <ProductCard
+                key={product.id}
+                product={product}
+                action={
+                  <button
+                    type="button"
+                    className="mini-button"
+                    disabled={soldOut}
+                    onClick={() =>
+                      addItem({
+                        productId: product.id,
+                        productSlug: product.slug,
+                        productName: product.name,
+                        image: product.images[0],
+                        quantity: 1,
+                        stockAvailable: product.saleStock,
+                        basePrice: product.price,
+                        requiresPrescription: product.prescriptionSupported,
+                      })
+                    }
+                  >
+                    {soldOut ? "Sold out" : "Add to bag"}
+                  </button>
+                }
+              />
+            );
+          })}
         </div>
       </section>
 

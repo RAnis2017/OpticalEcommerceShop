@@ -9,10 +9,11 @@ import { useTryOn } from "../state/try-on-context";
 
 export function ProductPage() {
   const { slug = "" } = useParams();
-  const { addItem } = useCart();
+  const { addItem, getItemQuantity, getProductQuantity, removeItem, updateItemQuantity } = useCart();
   const { isSelected, toggleSelection } = useTryOn();
   const [selectedLens, setSelectedLens] = useState<string>("frame-only");
   const [activeImage, setActiveImage] = useState<string>("");
+  const [quantity, setQuantity] = useState(1);
   const [message, setMessage] = useState("");
 
   const productQuery = useQuery({
@@ -27,6 +28,18 @@ export function ProductPage() {
 
   const lensPackages = lensPackagesQuery.data?.lensPackages ?? [];
   const product = productQuery.data?.product;
+  const selectedLensPackage: LensPackage | undefined =
+    selectedLens === "frame-only"
+      ? undefined
+      : lensPackages.find((lensPackage) => lensPackage.id === selectedLens);
+  const selectedLensPackageId = selectedLensPackage?.id;
+  const quantityInBag = product ? getItemQuantity(product.id, selectedLensPackageId) : 0;
+  const reservedAcrossProduct = product ? getProductQuantity(product.id) : 0;
+  const quantityReservedInOtherSelections = Math.max(0, reservedAcrossProduct - quantityInBag);
+  const saleStock = product?.saleStock ?? 0;
+  const maxSelectableQuantity = Math.max(saleStock - quantityReservedInOtherSelections, 0);
+  const remainingForProduct = Math.max(saleStock - reservedAcrossProduct, 0);
+  const canAddMore = quantity < maxSelectableQuantity;
 
   useEffect(() => {
     if (product?.images[0]) {
@@ -34,14 +47,24 @@ export function ProductPage() {
     }
   }, [product]);
 
+  useEffect(() => {
+    if (!product) {
+      return;
+    }
+
+    setQuantity(quantityInBag > 0 ? quantityInBag : maxSelectableQuantity > 0 ? 1 : 0);
+    setMessage("");
+  }, [maxSelectableQuantity, product, quantityInBag, selectedLensPackageId]);
+
   if (productQuery.isLoading || !product) {
     return <section className="page loading-panel">Loading product...</section>;
   }
-
-  const selectedLensPackage: LensPackage | undefined =
-    selectedLens === "frame-only"
-      ? undefined
-      : lensPackages.find((lensPackage) => lensPackage.id === selectedLens);
+  const stockMessage =
+    product.saleStock === 0
+      ? "Currently sold out."
+      : remainingForProduct <= 3
+        ? `Only ${remainingForProduct} left to add right now.`
+        : `${product.saleStock} frames available for order.`;
 
   return (
     <div className="page">
@@ -71,6 +94,20 @@ export function ProductPage() {
           <div className="price-row">
             <strong className="product-price">Rs {product.price.toLocaleString()}</strong>
             {product.compareAtPrice ? <span className="compare-price">Rs {product.compareAtPrice.toLocaleString()}</span> : null}
+          </div>
+          <div className="product-detail-status">
+            <span className={product.saleStock > 0 ? "status-pill status-confirmed" : "status-pill status-cancelled"}>
+              {product.saleStock > 0 ? "In stock" : "Sold out"}
+            </span>
+            <p className="detail-helper">{stockMessage}</p>
+            {quantityInBag > 0 ? (
+              <p className="detail-helper">
+                {quantityInBag} in your bag for this lens selection
+                {quantityReservedInOtherSelections > 0
+                  ? `, plus ${quantityReservedInOtherSelections} reserved with other lens choices.`
+                  : "."}
+              </p>
+            ) : null}
           </div>
           <p>{product.description}</p>
 
@@ -119,29 +156,86 @@ export function ProductPage() {
             </select>
           </div>
 
+          <div className="quantity-panel">
+            <div>
+              <span className="detail-label">Quantity</span>
+              <p className="detail-helper">
+                {quantityInBag > 0
+                  ? "Adjust the quantity of this exact lens combination in your bag."
+                  : "Choose how many of this frame and lens combination to add."}
+              </p>
+            </div>
+            <div className="quantity-stepper">
+              <button
+                type="button"
+                aria-label="Decrease quantity"
+                onClick={() => setQuantity((current) => Math.max(1, current - 1))}
+                disabled={quantity <= 1}
+              >
+                -
+              </button>
+              <span>{quantity}</span>
+              <button
+                type="button"
+                aria-label="Increase quantity"
+                onClick={() => setQuantity((current) => Math.min(maxSelectableQuantity, current + 1))}
+                disabled={!canAddMore}
+              >
+                +
+              </button>
+            </div>
+          </div>
+
           <div className="detail-actions">
             <button
+              type="button"
               className="button button-primary"
+              disabled={quantity === 0}
               onClick={() => {
+                if (quantityInBag > 0) {
+                  updateItemQuantity({
+                    productId: product.id,
+                    quantity,
+                    lensPackageId: selectedLensPackageId,
+                    stockAvailable: product.saleStock,
+                  });
+                  setMessage("Bag quantity updated.");
+                  return;
+                }
+
                 addItem({
                   productId: product.id,
                   productSlug: product.slug,
                   productName: product.name,
                   image: product.images[0],
-                  quantity: 1,
+                  quantity,
+                  stockAvailable: product.saleStock,
                   basePrice: product.price,
                   lensPackageId: selectedLensPackage?.id,
                   lensPackageName: selectedLensPackage?.name,
                   lensPrice: selectedLensPackage?.price,
                   requiresPrescription: product.prescriptionSupported,
                 });
-                setMessage("Added to your bag.");
+                setMessage(quantity > 1 ? `${quantity} frames added to your bag.` : "Added to your bag.");
               }}
             >
-              Add to bag
+              {quantityInBag > 0 ? "Update bag" : "Add to bag"}
             </button>
+            {quantityInBag > 0 ? (
+              <button
+                type="button"
+                className="button button-secondary"
+                onClick={() => {
+                  removeItem(product.id, selectedLensPackageId);
+                  setMessage("Removed from your bag.");
+                }}
+              >
+                Remove from bag
+              </button>
+            ) : null}
             {product.tryOnEligible ? (
               <button
+                type="button"
                 className={isSelected(product.id) ? "button button-secondary is-selected" : "button button-secondary"}
                 onClick={() => {
                   toggleSelection(product.id);

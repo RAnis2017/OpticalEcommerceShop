@@ -15,7 +15,7 @@ const categories: Array<{ label: string; value: ProductCategory | "all" }> = [
 
 export function ShopPage() {
   const [category, setCategory] = useState<ProductCategory | "all">("all");
-  const { addItem } = useCart();
+  const { addItem, getProductQuantity } = useCart();
   const { data, isLoading } = useQuery({
     queryKey: ["products", category],
     queryFn: () => getProducts(category),
@@ -53,30 +53,37 @@ export function ShopPage() {
           <div className="loading-panel">Loading products...</div>
         ) : (
           <div className="product-grid">
-            {data.products.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                action={
-                  <button
-                    className="mini-button"
-                    onClick={() =>
-                      addItem({
-                        productId: product.id,
-                        productSlug: product.slug,
-                        productName: product.name,
-                        image: product.images[0],
-                        quantity: 1,
-                        basePrice: product.price,
-                        requiresPrescription: product.prescriptionSupported,
-                      })
-                    }
-                  >
-                    Add to bag
-                  </button>
-                }
-              />
-            ))}
+            {data.products.map((product) => {
+              const soldOut = getProductQuantity(product.id) >= product.saleStock;
+
+              return (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  action={
+                    <button
+                      type="button"
+                      className="mini-button"
+                      disabled={soldOut}
+                      onClick={() =>
+                        addItem({
+                          productId: product.id,
+                          productSlug: product.slug,
+                          productName: product.name,
+                          image: product.images[0],
+                          quantity: 1,
+                          stockAvailable: product.saleStock,
+                          basePrice: product.price,
+                          requiresPrescription: product.prescriptionSupported,
+                        })
+                      }
+                    >
+                      {soldOut ? "Sold out" : "Add to bag"}
+                    </button>
+                  }
+                />
+              );
+            })}
           </div>
         )}
       </section>

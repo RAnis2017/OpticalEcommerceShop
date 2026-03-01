@@ -31,7 +31,12 @@ export function ProductCard({ product, action }: ProductCardProps) {
           ))}
         </div>
         <div className="product-card-bottom">
-          <strong>Rs {product.price.toLocaleString()}</strong>
+          <div className="product-card-price-group">
+            <strong>Rs {product.price.toLocaleString()}</strong>
+            <span className="product-card-stock">
+              {product.saleStock > 0 ? `${product.saleStock} ready to order` : "Currently sold out"}
+            </span>
+          </div>
         </div>
         {action ? <div className="product-card-actions">{action}</div> : null}
       </div>
