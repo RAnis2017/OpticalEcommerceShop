@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Syne:wght@500;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Manrope:wght@400;500;600;700;800&display=swap");
 
 :root {
   color-scheme: light;
@@ -11,7 +11,7 @@
   --space-7: 48px;
   --space-8: 64px;
   --space-9: 88px;
-  --page-max: 1540px;
+  --page-max: 1480px;
   --bg: #efe8dc;
   --bg-strong: #e5d8c5;
   --paper: rgba(255, 250, 242, 0.88);
@@ -31,7 +31,7 @@
   --gold: #9c6d37;
   --shadow-soft: 0 22px 56px rgba(20, 24, 26, 0.08);
   --shadow-strong: 0 34px 96px rgba(10, 13, 15, 0.16);
-  font-family: "Syne", "Segoe UI Variable", sans-serif;
+  font-family: "Manrope", "Segoe UI Variable", sans-serif;
   background:
     radial-gradient(circle at top left, rgba(234, 91, 42, 0.14), transparent 26%),
     radial-gradient(circle at 78% 2%, rgba(45, 109, 246, 0.16), transparent 24%),
@@ -167,7 +167,7 @@ img {
     linear-gradient(145deg, var(--ink), var(--night));
   color: var(--accent);
   font-weight: 800;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.04em;
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
 }
 
@@ -185,7 +185,7 @@ img {
 .brand-tag {
   color: var(--muted);
   font-size: 0.82rem;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.03em;
 }
 
 .site-nav {
@@ -219,7 +219,7 @@ img {
   padding: 13px 18px;
   border-radius: 999px;
   color: var(--muted);
-  font-size: 0.92rem;
+  font-size: 0.9rem;
   font-weight: 700;
   border: 1px solid transparent;
 }
@@ -388,22 +388,22 @@ img {
 .product-card-body h3 {
   margin: 0;
   font-family: "Instrument Serif", Georgia, serif;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.02em;
 }
 
 .hero-copy h1 {
-  max-width: 10ch;
+  max-width: 9ch;
   font-size: clamp(3.6rem, 7vw, 6.6rem);
-  line-height: 0.9;
+  line-height: 0.92;
 }
 
 .section-header {
-  max-width: 760px;
+  max-width: 680px;
 }
 
 .section-header h2 {
   font-size: clamp(2.2rem, 3.8vw, 4.1rem);
-  line-height: 0.95;
+  line-height: 0.98;
 }
 
 .eyebrow {
@@ -411,7 +411,7 @@ img {
   color: var(--gold);
   font-size: 0.72rem;
   font-weight: 800;
-  letter-spacing: 0.24em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
 }
 
@@ -426,6 +426,16 @@ img {
   margin: 0;
   color: var(--muted);
   line-height: 1.7;
+}
+
+.hero-copy p:last-of-type,
+.section-header p,
+.product-subtitle,
+.product-detail-copy > p,
+.shop-banner span,
+.selected-summary-header p,
+.hero-stage-copy span {
+  max-width: 60ch;
 }
 
 .hero-actions,
@@ -651,7 +661,7 @@ button:disabled {
 
 .hero-stage-copy h3 {
   font-size: clamp(2rem, 3.2vw, 3rem);
-  line-height: 0.95;
+  line-height: 0.98;
 }
 
 .hero-stage-copy span,
@@ -765,7 +775,7 @@ button:disabled {
 
 .product-card-body h3 {
   font-size: 1.72rem;
-  line-height: 0.98;
+  line-height: 1.02;
 }
 
 .product-card-meta,
@@ -800,7 +810,7 @@ button:disabled {
 .product-card-meta {
   font-size: 0.8rem;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.05em;
 }
 
 .product-card-swatches {
@@ -981,7 +991,7 @@ button:disabled {
   color: var(--gold);
   font-size: 0.74rem;
   font-weight: 800;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.11em;
   text-transform: uppercase;
 }
 
@@ -1430,6 +1440,16 @@ textarea {
 
   .product-gallery-strip {
     grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .hero-copy p:last-of-type,
+  .section-header p,
+  .product-subtitle,
+  .product-detail-copy > p,
+  .shop-banner span,
+  .selected-summary-header p,
+  .hero-stage-copy span {
+    max-width: none;
   }
 
   .cart-item-header,
