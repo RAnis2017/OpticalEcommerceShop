@@ -1,0 +1,18 @@
+{
+  "name": "optical-ecommerce-shop",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"npm --prefix apps/api run dev\" \"npm --prefix apps/web run dev\"",
+    "dev:api": "npm --prefix apps/api run dev",
+    "dev:web": "npm --prefix apps/web run dev",
+    "build:shared": "tsc -p packages/shared/tsconfig.json --emitDeclarationOnly",
+    "check:shared": "tsc -p packages/shared/tsconfig.json --noEmit",
+    "build": "npm run build:shared && npm --prefix apps/api run build && npm --prefix apps/web run build",
+    "check": "npm run check:shared && npm --prefix apps/api run check && npm --prefix apps/web run check"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1",
+    "typescript": "^5.9.2"
+  }
+}
